@@ -3,56 +3,330 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>quanypoy</title>
+    <title>NAVER</title>
     <style>
         body {
-            font-family: 'Malgun Gothic', sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Malgun Gothic", "맑은 고딕", sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f5f6f7;
+            background-color: #fafbfc;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            height: 100vh;
+            min-height: 100vh;
         }
         .container {
             text-align: center;
-            background: white;
-            padding: 40px;
-            border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            width: 400px;
+            background: #ffffff;
+            padding: 50px 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            width: 500px;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
         }
         h1 {
             color: #03c75a;
-            margin-bottom: 20px;
+            font-size: 42px;
+            font-weight: 800;
+            margin-bottom: 30px;
+            letter-spacing: -1.5px;
+            cursor: pointer;
+        }
+        .search-wrapper {
+            position: relative;
+            width: 100%;
+        }
+        .search-box-container {
+            display: flex;
+            align-items: center;
+            border: 2px solid #03c75a;
+            border-radius: 30px;
+            background: #fff;
+            overflow: hidden;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 6px rgba(3, 199, 90, 0.1);
+        }
+        .search-box-container:focus-within {
+            box-shadow: 0 4px 12px rgba(3, 199, 90, 0.25);
         }
         .search-box {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #03c75a;
-            border-radius: 4px;
+            flex: 1;
+            padding: 14px 20px;
+            border: none;
             box-sizing: border-box;
             font-size: 16px;
             outline: none;
+            color: #333;
+        }
+        .search-box::placeholder {
+            color: #aaa;
+        }
+        .search-btn {
+            background-color: #03c75a;
+            border: none;
+            color: white;
+            padding: 0 24px;
+            height: 50px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: background-color 0.2s ease;
+        }
+        .search-btn:hover {
+            background-color: #02b350;
+        }
+        .autocomplete-list {
+            position: absolute;
+            top: calc(100% + 8px);
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #e1e8ed;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+            z-index: 10;
+            max-height: 200px;
+            overflow-y: auto;
+            text-align: left;
+            display: none;
+            padding: 6px 0;
+        }
+        .autocomplete-item {
+            padding: 10px 18px;
+            cursor: pointer;
+            font-size: 14px;
+            color: #444;
+            transition: background-color 0.15s ease;
+        }
+        .autocomplete-item:hover {
+            background-color: #f2fcf5;
+            color: #03c75a;
+            font-weight: 500;
+        }
+        #resultSection {
+            display: none;
+            text-align: left;
+            margin-top: 10px;
+        }
+        .result-header {
+            font-size: 15px;
+            color: #666;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .back-btn {
+            background: none;
+            border: 1px solid #ddd;
+            padding: 4px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            color: #666;
+        }
+        .back-btn:hover {
+            background: #f5f6f7;
+        }
+        .result-item {
+            margin-bottom: 18px;
+        }
+        .result-title {
+            font-size: 16px;
+            color: #0066cc;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 4px;
+        }
+        .result-title:hover {
+            text-decoration: underline;
+        }
+        .result-desc {
+            font-size: 13px;
+            color: #444;
+            line-height: 1.4;
+            margin: 0;
+        }
+        .no-result {
+            text-align: center;
+            color: #888;
+            padding: 30px 0;
+            font-size: 15px;
         }
         .footer {
-            margin-top: 20px;
-            font-size: 14px;
-            color: #888;
+            margin-top: 30px;
+            font-size: 13px;
+            color: #999;
+            letter-spacing: -0.5px;
         }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <h1>quanypoy</h1>
-        <input type="text" class="search-box" placeholder="검색어를 입력하세요">
+        <h1 id="homeLogo">NAVER</h1>
+        
+        <div id="searchSection">
+            <div class="search-wrapper">
+                <div class="search-box-container">
+                    <input type="text" id="searchInput" class="search-box" placeholder="과일 이름을 입력하세요">
+                    <button type="button" id="searchBtn" class="search-btn">검색</button>
+                </div>
+                <div id="autocompleteList" class="autocomplete-list"></div>
+            </div>
+        </div>
+
+        <div id="resultSection">
+            <div class="result-header">
+                <span id="resultSummary"></span>
+                <button type="button" class="back-btn" id="backBtn">돌아가기</button>
+            </div>
+            <div id="resultList"></div>
+        </div>
+
         <div class="footer">
-            <p>네이버 클론 슈팅 게임 페이지</p>
+            <p>네이버 클론</p>
         </div>
     </div>
+
+    <script>
+        const searchDatabase = [
+            {
+                title: "새콤달콤 맛있는 사과",
+                desc: "아침에 먹는 사과는 금이라는 말이 있죠. 비타민과 식이섬유가 풍부한 대표 과일 사과의 효능과 품종 정보입니다.",
+                keywords: ["사과", "apple", "과일", "새콤달콤 맛있는 사과"]
+            },
+            {
+                title: "비타민 C의 왕 바나나",
+                desc: "부드럽고 소화가 잘 되어 간식으로 최고인 바나나! 칼륨이 풍부하고 운동 전후 에너지 보충에 좋은 과일입니다.",
+                keywords: ["바나나", "banana", "과일", "비타민 C의 왕 바나나"]
+            },
+            {
+                title: "상큼하고 시원한 수박",
+                desc: "여름철 갈증 해소에 으뜸인 수박. 수분 함량이 높고 시원하게 즐길 수 있는 대표적인 덩굴손 과일입니다.",
+                keywords: ["수박", "watermelon", "과일", "상큼하고 시원한 수박"]
+            },
+            {
+                title: "달콤함이 가득한 딸기",
+                desc: "겨울부터 봄까지 사랑받는 새콤달콤한 딸기. 항산화 성분이 풍부하고 디저트 토핑으로도 널리 쓰이는 과일입니다.",
+                keywords: ["딸기", "strawberry", "과일", "달콤함이 가득한 딸기"]
+            },
+            {
+                title: "피로회복에 좋은 감귤",
+                desc: "비타민 C가 가득하여 면역력 강화에 도움을 주는 감귤. 겨울철 간식으로 빼놓을 수 없는 상큼한 과일입니다.",
+                keywords: ["귤", "감귤", "orange", "과일", "피로회복에 좋은 감귤"]
+            }
+        ];
+
+        const searchInput = document.getElementById('searchInput');
+        const searchBtn = document.getElementById('searchBtn');
+        const autocompleteList = document.getElementById('autocompleteList');
+        const searchSection = document.getElementById('searchSection');
+        const resultSection = document.getElementById('resultSection');
+        const resultList = document.getElementById('resultList');
+        const resultSummary = document.getElementById('resultSummary');
+        const backBtn = document.getElementById('backBtn');
+        const homeLogo = document.getElementById('homeLogo');
+
+        const suggestions = searchDatabase.map(item => item.title);
+
+        searchInput.addEventListener('input', function() {
+            const keyword = this.value.trim();
+            autocompleteList.innerHTML = '';
+
+            if (keyword.length > 0) {
+                const filtered = suggestions.filter(item => item.toLowerCase().includes(keyword.toLowerCase()));
+
+                if (filtered.length > 0) {
+                    autocompleteList.style.display = 'block';
+                    filtered.forEach(item => {
+                        const div = document.createElement('div');
+                        div.classList.add('autocomplete-item');
+                        div.textContent = item;
+                        div.addEventListener('click', function() {
+                            searchInput.value = item;
+                            autocompleteList.style.display = 'none';
+                            performSearch(item);
+                        });
+                        autocompleteList.appendChild(div);
+                    });
+                } else {
+                    autocompleteList.style.display = 'none';
+                }
+            } else {
+                autocompleteList.style.display = 'none';
+            }
+        });
+
+        function performSearch(query) {
+            if (!query) return;
+            autocompleteList.style.display = 'none';
+
+            const matchedResults = searchDatabase.filter(item => 
+                item.title.toLowerCase().includes(query.toLowerCase()) || 
+                item.desc.toLowerCase().includes(query.toLowerCase()) ||
+                item.keywords.some(kw => kw.toLowerCase().includes(query.toLowerCase()))
+            );
+
+            searchSection.style.display = 'none';
+            resultSection.style.display = 'block';
+            resultSummary.innerHTML = `<strong>"${query}"</strong> 검색 결과 (${matchedResults.length}건)`;
+
+            resultList.innerHTML = '';
+
+            if (matchedResults.length > 0) {
+                matchedResults.forEach(res => {
+                    const itemDiv = document.createElement('div');
+                    itemDiv.classList.add('result-item');
+                    itemDiv.innerHTML = `
+                        <a href="#" class="result-title" onclick="alert('${res.title} 페이지로 이동합니다!'); return false;">${res.title}</a>
+                        <p class="result-desc">${res.desc}</p>
+                    `;
+                    resultList.appendChild(itemDiv);
+                });
+            } else {
+                resultList.innerHTML = `
+                    <div class="no-result">
+                        <p><strong>'${query}'</strong>에 대한 검색 결과가 없습니다.</p>
+                        <p style="font-size: 13px; color: #aaa; margin-top: 5px;">단어의 철자가 정확한지 확인해 보세요.</p>
+                    </div>
+                `;
+            }
+        }
+
+        searchBtn.addEventListener('click', function() {
+            performSearch(searchInput.value.trim());
+        });
+
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                performSearch(searchInput.value.trim());
+            }
+        });
+
+        backBtn.addEventListener('click', function() {
+            resultSection.style.display = 'none';
+            searchSection.style.display = 'block';
+            searchInput.value = '';
+        });
+
+        homeLogo.addEventListener('click', function() {
+            resultSection.style.display = 'none';
+            searchSection.style.display = 'block';
+            searchInput.value = '';
+        });
+
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.search-wrapper')) {
+                autocompleteList.style.display = 'none';
+            }
+        });
+    </script>
 
 </body>
 </html>
