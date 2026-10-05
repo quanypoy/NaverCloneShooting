@@ -3,27 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NAVER</title>
+    <title>NAVER\</title>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Malgun Gothic", "맑은 고딕", sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #fafbfc;
+            background-color: #efefef;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
             min-height: 100vh;
         }
+
         .container {
             text-align: center;
             background: #ffffff;
             padding: 50px 40px;
             border-radius: 12px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-            width: 500px;
+            width: 600px;
             box-sizing: border-box;
+            margin-top: 100px;
             transition: all 0.3s ease;
         }
         h1 {
@@ -45,23 +46,15 @@
             border-radius: 30px;
             background: #fff;
             overflow: hidden;
-            transition: all 0.2s ease;
             box-shadow: 0 2px 6px rgba(3, 199, 90, 0.1);
-        }
-        .search-box-container:focus-within {
-            box-shadow: 0 4px 12px rgba(3, 199, 90, 0.25);
         }
         .search-box {
             flex: 1;
             padding: 14px 20px;
             border: none;
-            box-sizing: border-box;
-            font-size: 16px;
             outline: none;
+            font-size: 16px;
             color: #333;
-        }
-        .search-box::placeholder {
-            color: #aaa;
         }
         .search-btn {
             background-color: #03c75a;
@@ -72,260 +65,284 @@
             cursor: pointer;
             font-size: 16px;
             font-weight: 600;
-            transition: background-color 0.2s ease;
         }
         .search-btn:hover {
             background-color: #02b350;
         }
-        .autocomplete-list {
-            position: absolute;
-            top: calc(100% + 8px);
-            left: 0;
-            right: 0;
-            background: white;
-            border: 1px solid #e1e8ed;
-            border-radius: 12px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
-            z-index: 10;
-            max-height: 200px;
-            overflow-y: auto;
-            text-align: left;
-            display: none;
-            padding: 6px 0;
-        }
-        .autocomplete-item {
-            padding: 10px 18px;
-            cursor: pointer;
-            font-size: 14px;
-            color: #444;
-            transition: background-color 0.15s ease;
-        }
-        .autocomplete-item:hover {
-            background-color: #f2fcf5;
-            color: #03c75a;
-            font-weight: 500;
-        }
+
         #resultSection {
             display: none;
-            text-align: left;
-            margin-top: 10px;
+            width: 700px;
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 20px 0;
         }
-        .result-header {
-            font-size: 15px;
-            color: #666;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid #eee;
+        .result-top-bar {
+            background: #03c75a;
+            padding: 15px 25px;
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            border-radius: 8px 8px 0 0;
         }
-        .back-btn {
-            background: none;
-            border: 1px solid #ddd;
-            padding: 4px 10px;
-            border-radius: 4px;
+        .result-top-bar h2 {
+            color: white;
+            margin: 0;
+            font-size: 20px;
             cursor: pointer;
+        }
+        .result-search-box-small {
+            display: flex;
+            flex: 1;
+            margin-left: 20px;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+        .result-search-box-small input {
+            flex: 1;
+            padding: 8px 15px;
+            border: none;
+            outline: none;
+            font-size: 14px;
+        }
+        .result-search-box-small button {
+            background: #03c75a;
+            border: none;
+            color: white;
+            padding: 0 15px;
+            cursor: pointer;
+        }
+
+        .result-body {
+            background: #efefef;
+            padding-top: 15px;
+        }
+
+        .naver-card {
+            background: #ffffff;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            text-align: left;
+        }
+        .card-tag {
             font-size: 12px;
-            color: #666;
-        }
-        .back-btn:hover {
-            background: #f5f6f7;
-        }
-        .result-item {
-            margin-bottom: 18px;
-        }
-        .result-title {
-            font-size: 16px;
-            color: #0066cc;
-            text-decoration: none;
-            font-weight: 600;
+            color: #03c75a;
+            font-weight: bold;
+            margin-bottom: 6px;
             display: inline-block;
-            margin-bottom: 4px;
+            background: #e6f8ed;
+            padding: 2px 6px;
+            border-radius: 4px;
         }
-        .result-title:hover {
+        .card-title {
+            font-size: 16px;
+            color: #1a0dab;
+            font-weight: 600;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 8px;
+        }
+        .card-title:hover {
             text-decoration: underline;
         }
-        .result-desc {
-            font-size: 13px;
+        .card-desc {
+            font-size: 14px;
             color: #444;
-            line-height: 1.4;
+            line-height: 1.5;
             margin: 0;
+            white-space: pre-wrap;
         }
-        .no-result {
+
+        .loading {
             text-align: center;
-            color: #888;
-            padding: 30px 0;
+            color: #666;
+            padding: 60px;
+            background: white;
+            border-radius: 8px;
             font-size: 15px;
+        }
+        .error-box {
+            color: red;
+            text-align: left;
+            padding: 20px;
+            word-break: break-all;
+            background: white;
+            border-radius: 8px;
+            font-size: 14px;
+            line-height: 1.6;
         }
         .footer {
             margin-top: 30px;
             font-size: 13px;
             color: #999;
-            letter-spacing: -0.5px;
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
+    <div class="container" id="homeContainer">
         <h1 id="homeLogo">NAVER</h1>
-        
-        <div id="searchSection">
-            <div class="search-wrapper">
-                <div class="search-box-container">
-                    <input type="text" id="searchInput" class="search-box" placeholder="과일 이름을 입력하세요">
-                    <button type="button" id="searchBtn" class="search-btn">검색</button>
-                </div>
-                <div id="autocompleteList" class="autocomplete-list"></div>
+        <div class="search-wrapper">
+            <div class="search-box-container">
+                <input type="text" id="searchInput" class="search-box" placeholder="검색어를 입력하세요">
+                <button type="button" id="searchBtn" class="search-btn">검색</button>
             </div>
         </div>
+        <div class="footer"><p>네이버 클론</p></div>
+    </div>
 
-        <div id="resultSection">
-            <div class="result-header">
-                <span id="resultSummary"></span>
-                <button type="button" class="back-btn" id="backBtn">돌아가기</button>
+    <div id="resultSection">
+        <div class="result-top-bar">
+            <h2 id="resultLogo">NAVER</h2>
+            <div class="result-search-box-small">
+                <input type="text" id="searchInputSmall">
+                <button type="button" id="searchBtnSmall">검색</button>
             </div>
-            <div id="resultList"></div>
         </div>
-
-        <div class="footer">
-            <p>네이버 클론</p>
-        </div>
+        <div class="result-body" id="resultContainer"></div>
     </div>
 
     <script>
-        const searchDatabase = [
-            {
-                title: "새콤달콤 맛있는 사과",
-                desc: "아침에 먹는 사과는 금이라는 말이 있죠. 비타민과 식이섬유가 풍부한 대표 과일 사과의 효능과 품종 정보입니다.",
-                keywords: ["사과", "apple", "과일", "새콤달콤 맛있는 사과"]
-            },
-            {
-                title: "비타민 C의 왕 바나나",
-                desc: "부드럽고 소화가 잘 되어 간식으로 최고인 바나나! 칼륨이 풍부하고 운동 전후 에너지 보충에 좋은 과일입니다.",
-                keywords: ["바나나", "banana", "과일", "비타민 C의 왕 바나나"]
-            },
-            {
-                title: "상큼하고 시원한 수박",
-                desc: "여름철 갈증 해소에 으뜸인 수박. 수분 함량이 높고 시원하게 즐길 수 있는 대표적인 덩굴손 과일입니다.",
-                keywords: ["수박", "watermelon", "과일", "상큼하고 시원한 수박"]
-            },
-            {
-                title: "달콤함이 가득한 딸기",
-                desc: "겨울부터 봄까지 사랑받는 새콤달콤한 딸기. 항산화 성분이 풍부하고 디저트 토핑으로도 널리 쓰이는 과일입니다.",
-                keywords: ["딸기", "strawberry", "과일", "달콤함이 가득한 딸기"]
-            },
-            {
-                title: "피로회복에 좋은 감귤",
-                desc: "비타민 C가 가득하여 면역력 강화에 도움을 주는 감귤. 겨울철 간식으로 빼놓을 수 없는 상큼한 과일입니다.",
-                keywords: ["귤", "감귤", "orange", "과일", "피로회복에 좋은 감귤"]
-            }
-        ];
+        const GEMINI_API_KEY = "";
 
+        const MODEL = "gemini-3.8-flash";
+
+        const homeContainer = document.getElementById('homeContainer');
+        const resultSection = document.getElementById('resultSection');
         const searchInput = document.getElementById('searchInput');
         const searchBtn = document.getElementById('searchBtn');
-        const autocompleteList = document.getElementById('autocompleteList');
-        const searchSection = document.getElementById('searchSection');
-        const resultSection = document.getElementById('resultSection');
-        const resultList = document.getElementById('resultList');
-        const resultSummary = document.getElementById('resultSummary');
-        const backBtn = document.getElementById('backBtn');
+        const searchInputSmall = document.getElementById('searchInputSmall');
+        const searchBtnSmall = document.getElementById('searchBtnSmall');
+        const resultContainer = document.getElementById('resultContainer');
         const homeLogo = document.getElementById('homeLogo');
+        const resultLogo = document.getElementById('resultLogo');
 
-        const suggestions = searchDatabase.map(item => item.title);
+        function escapeHtml(str) {
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
 
-        searchInput.addEventListener('input', function() {
-            const keyword = this.value.trim();
-            autocompleteList.innerHTML = '';
+        function showError(title, message, hint) {
+            resultContainer.innerHTML = `
+                <div class="error-box">
+                    <b>❌ ${escapeHtml(title)}</b><br>${escapeHtml(message)}
+                    ${hint ? `<br><br>💡 ${hint}` : ''}
+                </div>`;
+        }
 
-            if (keyword.length > 0) {
-                const filtered = suggestions.filter(item => item.toLowerCase().includes(keyword.toLowerCase()));
+        async function performSearch(query) {
+            if (!query) return;
 
-                if (filtered.length > 0) {
-                    autocompleteList.style.display = 'block';
-                    filtered.forEach(item => {
-                        const div = document.createElement('div');
-                        div.classList.add('autocomplete-item');
-                        div.textContent = item;
-                        div.addEventListener('click', function() {
-                            searchInput.value = item;
-                            autocompleteList.style.display = 'none';
-                            performSearch(item);
-                        });
-                        autocompleteList.appendChild(div);
+            if (!GEMINI_API_KEY) {
+                homeContainer.style.display = 'none';
+                resultSection.style.display = 'block';
+                searchInputSmall.value = query;
+                showError('API Key 없음', '코드 상단의 GEMINI_API_KEY에 본인의 키를 입력해주세요.');
+                return;
+            }
+
+            homeContainer.style.display = 'none';
+            resultSection.style.display = 'block';
+            searchInputSmall.value = query;
+
+            resultContainer.innerHTML = `<div class="loading">검색 중...</div>`;
+
+            const promptText = `
+사용자가 "${query}"를 검색했습니다.
+이 검색어에 대한 정보를 네이버 검색 결과 스타일로 총 3가지 영역(지식백과/개요, 블로그 리뷰/팁, 뉴스/최신 동향)으로 나누어서 한국어로 요약해 주세요.
+반드시 아래 형식의 JSON 배열로만 응답하세요.
+
+[
+  { "tag": "지식백과", "title": "${query}의 핵심 개념 및 정의", "desc": "상세한 설명 내용" },
+  { "tag": "블로그", "title": "${query} 이용 후기 및 추천 팁", "desc": "블로그 스타일의 유용한 정보 내용" },
+  { "tag": "뉴스/트렌드", "title": "${query} 관련 최신 소식 및 주의사항", "desc": "트렌드 및 주의사항 내용" }
+]`;
+
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${GEMINI_API_KEY}`;
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: promptText }] }],
+                        generationConfig: { responseMimeType: "application/json" }
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.candidates && data.candidates[0] && data.candidates[0].content) {
+                    let aiText = data.candidates[0].content.parts
+                        .map(p => p.text || '')
+                        .join('')
+                        .replace(/```json/g, '')
+                        .replace(/```/g, '')
+                        .trim();
+
+                    let results;
+                    try {
+                        results = JSON.parse(aiText);
+                        if (!Array.isArray(results)) results = [results];
+                    } catch (parseError) {
+                        results = [{
+                            tag: "AI 통합검색",
+                            title: `${query} 검색 결과`,
+                            desc: aiText
+                        }];
+                    }
+
+                    resultContainer.innerHTML = '';
+                    results.forEach(item => {
+                        const card = document.createElement('div');
+                        card.className = 'naver-card';
+                        card.innerHTML = `
+                            <span class="card-tag">${escapeHtml(item.tag || '검색결과')}</span>
+                            <a href="#" class="card-title" onclick="return false;">${escapeHtml(item.title || query)}</a>
+                            <p class="card-desc">${escapeHtml(item.desc || '')}</p>
+                        `;
+                        resultContainer.appendChild(card);
                     });
                 } else {
-                    autocompleteList.style.display = 'none';
+                    const errReason = data.error ? data.error.message : '알 수 없는 응답 오류 (안전 필터 등으로 응답이 비었을 수 있습니다)';
+                    showError(
+                        'API 오류 발생',
+                        errReason,
+                        `<b>체크포인트:</b><br>
+                         1. 모델명(<code>${escapeHtml(MODEL)}</code>)이 현재 사용 가능한지 확인해주세요.<br>
+                         2. API Key가 올바른 Gemini API Key(AIza...)인지 확인해주세요.<br>
+                         3. 무료 사용량(429)을 초과하지 않았는지 확인해주세요.`
+                    );
                 }
-            } else {
-                autocompleteList.style.display = 'none';
-            }
-        });
 
-        function performSearch(query) {
-            if (!query) return;
-            autocompleteList.style.display = 'none';
-
-            const matchedResults = searchDatabase.filter(item => 
-                item.title.toLowerCase().includes(query.toLowerCase()) || 
-                item.desc.toLowerCase().includes(query.toLowerCase()) ||
-                item.keywords.some(kw => kw.toLowerCase().includes(query.toLowerCase()))
-            );
-
-            searchSection.style.display = 'none';
-            resultSection.style.display = 'block';
-            resultSummary.innerHTML = `<strong>"${query}"</strong> 검색 결과 (${matchedResults.length}건)`;
-
-            resultList.innerHTML = '';
-
-            if (matchedResults.length > 0) {
-                matchedResults.forEach(res => {
-                    const itemDiv = document.createElement('div');
-                    itemDiv.classList.add('result-item');
-                    itemDiv.innerHTML = `
-                        <a href="#" class="result-title" onclick="alert('${res.title} 페이지로 이동합니다!'); return false;">${res.title}</a>
-                        <p class="result-desc">${res.desc}</p>
-                    `;
-                    resultList.appendChild(itemDiv);
-                });
-            } else {
-                resultList.innerHTML = `
-                    <div class="no-result">
-                        <p><strong>'${query}'</strong>에 대한 검색 결과가 없습니다.</p>
-                        <p style="font-size: 13px; color: #aaa; margin-top: 5px;">단어의 철자가 정확한지 확인해 보세요.</p>
-                    </div>
-                `;
+            } catch (error) {
+                showError(
+                    '네트워크 또는 CORS 차단 오류',
+                    error.message,
+                    `파일을 로컬 컴퓨터에서 더블클릭하여 열었을 경우 브라우저 보안(CORS) 때문에 통신이 차단될 수 있습니다. VS Code의 <b>Live Server</b> 확장 프로그램을 사용해 실행해 보세요!`
+                );
             }
         }
 
-        searchBtn.addEventListener('click', function() {
-            performSearch(searchInput.value.trim());
-        });
+        searchBtn.addEventListener('click', () => performSearch(searchInput.value.trim()));
+        searchInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') performSearch(searchInput.value.trim()); });
 
-        searchInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                performSearch(searchInput.value.trim());
-            }
-        });
+        searchBtnSmall.addEventListener('click', () => performSearch(searchInputSmall.value.trim()));
+        searchInputSmall.addEventListener('keypress', (e) => { if (e.key === 'Enter') performSearch(searchInputSmall.value.trim()); });
 
-        backBtn.addEventListener('click', function() {
+        const goHome = () => {
             resultSection.style.display = 'none';
-            searchSection.style.display = 'block';
+            homeContainer.style.display = 'block';
             searchInput.value = '';
-        });
-
-        homeLogo.addEventListener('click', function() {
-            resultSection.style.display = 'none';
-            searchSection.style.display = 'block';
-            searchInput.value = '';
-        });
-
-        document.addEventListener('click', function(e) {
-            if (!e.target.closest('.search-wrapper')) {
-                autocompleteList.style.display = 'none';
-            }
-        });
+        };
+        homeLogo.addEventListener('click', goHome);
+        resultLogo.addEventListener('click', goHome);
     </script>
 
 </body>
